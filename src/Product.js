@@ -1,9 +1,21 @@
 import React from "react";
+import { db } from "./firebase";
+
 import "./Product.css";
 import { useStateValue } from "./StateProvider";
 function Product({ title, image, price, rating, id }) {
-  const [{ basket }, dispatch] = useStateValue();
+  const [{ basket, user }, dispatch] = useStateValue();
   const addToBasket = () => {
+    if (user) {
+      db.collection("users").doc(user?.uid).collection("cartItems").add({
+        id: id,
+        title: title,
+        image: image,
+        price: price,
+        rating: rating,
+      });
+    }
+
     dispatch({
       type: "ADD_TO_BASKET",
       item: {

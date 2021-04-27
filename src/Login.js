@@ -5,7 +5,9 @@ import { auth } from "./firebase";
 function Login() {
   const history = useHistory();
   const [email, setEmail] = useState("");
+
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const signIn = (e) => {
     //makes sure that the page doesnt refresh after submit
     e.preventDefault();
@@ -23,12 +25,13 @@ function Login() {
     auth
       .createUserWithEmailAndPassword(email, password)
       .then((auth) => {
-        if (auth) {
-          history.push("/");
-        }
+        auth.user.updateProfile({
+          displayName: name,
+        });
+        history.push("/");
       })
+
       .catch((error) => alert(error.message));
-    console.log(auth);
   };
   return (
     <div className="login">
@@ -41,6 +44,12 @@ function Login() {
       <div className="login__container">
         <h1>Sign in</h1>
         <form>
+          <h5>Name</h5>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          ></input>
           <h5>E-mail</h5>
           <input
             type="text"
